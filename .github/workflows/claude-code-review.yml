@@ -1,0 +1,18 @@
+name: Claude Code Review
+
+on:
+  pull_request:
+    types: [opened, synchronize, ready_for_review, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+  issues: read
+  id-token: write
+
+jobs:
+  review:
+    # Security: only run in MonumentalSystems org — see docs/PIPELINE-SECURITY.md
+    if: github.repository_owner == 'MonumentalSystems'
+    uses: MonumentalSystems/.github-private/.github/workflows/claude-code-review.yml@main
+    secrets: inherit
