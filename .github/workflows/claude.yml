@@ -1,0 +1,25 @@
+name: Claude Code
+
+on:
+  issue_comment:
+    types: [created]
+  pull_request_review_comment:
+    types: [created]
+  issues:
+    types: [opened, assigned, labeled]
+  pull_request_review:
+    types: [submitted]
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+  id-token: write
+  actions: read
+
+jobs:
+  claude:
+    # Security: only run in MonumentalSystems org — see docs/PIPELINE-SECURITY.md
+    if: github.repository_owner == 'MonumentalSystems'
+    uses: MonumentalSystems/.github-private/.github/workflows/claude-assistant.yml@main
+    secrets: inherit
