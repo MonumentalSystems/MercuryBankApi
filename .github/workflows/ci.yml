@@ -1,0 +1,18 @@
+name: CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+    paths:
+      - '**/*.cs'
+      - '**/*.csproj'
+      - '**/*.sln'
+      - 'Directory.Build.props'
+      - 'Directory.Packages.props'
+      - 'global.json'
+
+jobs:
+  ci:
+    uses: MonumentalSystems/.github-private/.github/workflows/ci.yml@main
+    with:
+      dotnet-version: '10.0.x'
