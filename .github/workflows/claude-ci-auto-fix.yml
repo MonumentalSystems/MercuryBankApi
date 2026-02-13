@@ -1,0 +1,25 @@
+name: Auto Fix CI Failures
+
+on:
+  workflow_run:
+    workflows:
+      - "CI"
+    types:
+      - completed
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: read
+  issues: write
+  id-token: write
+
+jobs:
+  auto-fix:
+    # Security: only run in MonumentalSystems org — see docs/PIPELINE-SECURITY.md
+    if: github.repository_owner == 'MonumentalSystems'
+    uses: MonumentalSystems/.github-private/.github/workflows/claude-ci-auto-fix.yml@main
+    secrets: inherit
+    with:
+      ci-workflow-name: 'CI'
+      project-description: 'MercuryBank API helper library — .NET NuGet package'
