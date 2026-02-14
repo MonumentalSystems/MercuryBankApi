@@ -34,4 +34,26 @@ public class AccountTests : IClassFixture<SandboxFixture>
         account.Id.Should().Be(accounts[0].Id);
         account.Name.Should().NotBeNullOrWhiteSpace();
     }
+
+    [SandboxFact]
+    public async Task GetAccountStatementsAsync_ReturnsStatements()
+    {
+        var accounts = await _sandbox.Client.GetAccountsAsync();
+        accounts.Should().NotBeEmpty();
+
+        var statements = await _sandbox.Client.GetAccountStatementsAsync(accounts[0].Id);
+
+        statements.Should().NotBeNull();
+    }
+
+    [SandboxFact]
+    public async Task GetAccountCardsAsync_ReturnsCards()
+    {
+        var accounts = await _sandbox.Client.GetAccountsAsync();
+        accounts.Should().NotBeEmpty();
+
+        var cards = await _sandbox.Client.GetAccountCardsAsync(accounts[0].Id);
+
+        cards.Should().NotBeNull();
+    }
 }

@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace MercuryBankApi.Sandbox.Tests;
@@ -6,9 +7,13 @@ namespace MercuryBankApi.Sandbox.Tests;
 /// Shared fixture that creates a configured <see cref="IMercuryBankClient"/>
 /// pointing at the Mercury sandbox environment.
 /// <para>
-/// Required environment variable: <c>MERCURY_SANDBOX_TOKEN</c>.
-/// Tests that depend on this fixture are automatically skipped when the
-/// token is not set.
+/// The sandbox API token is resolved from (in priority order):
+/// <list type="number">
+///   <item>Environment variable <c>MERCURY_SANDBOX_TOKEN</c></item>
+///   <item>.NET user secrets key <c>Mercury:ApiToken</c></item>
+/// </list>
+/// Tests that depend on this fixture are automatically skipped when no
+/// token is available from any source.
 /// </para>
 /// </summary>
 public sealed class SandboxFixture : IDisposable
@@ -17,7 +22,7 @@ public sealed class SandboxFixture : IDisposable
 
     public SandboxFixture()
     {
-        var token = Environment.GetEnvironmentVariable("MERCURY_SANDBOX_TOKEN");
+        var token = ResolveToken();
 
         IsConfigured = !string.IsNullOrWhiteSpace(token);
 
@@ -40,4 +45,27 @@ public sealed class SandboxFixture : IDisposable
         _provider.GetRequiredService<IMercuryBankClient>();
 
     public void Dispose() => _provider.Dispose();
+
+    /// <summary>
+    /// Resolves the sandbox token from environment variables or user secrets.
+    /// </summary>
+    internal static string? ResolveToken()
+    {
+        var envToken = Environment.GetEnvironmentVariable("MERCURY_SANDBOX_TOKEN");
+        if (!string.IsNullOrWhiteSpace(envToken))
+            return envToken;
+
+        try
+        {
+            var config = new ConfigurationBuilder()
+                .AddUserSecrets<SandboxFixture>()
+                .Build();
+
+            return config.GetValue<string>("Mercury:ApiToken");
+        }
+        catch
+        {
+            return null;
+        }
+    }
 }

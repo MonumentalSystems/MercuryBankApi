@@ -1,17 +1,19 @@
 namespace MercuryBankApi.Sandbox.Tests;
 
 /// <summary>
-/// A <see cref="FactAttribute"/> that skips the test when the
-/// <c>MERCURY_SANDBOX_TOKEN</c> environment variable is not set.
+/// A <see cref="FactAttribute"/> that skips the test when no sandbox API
+/// token is available from environment variables or .NET user secrets.
 /// </summary>
 public sealed class SandboxFactAttribute : FactAttribute
 {
     public SandboxFactAttribute()
     {
-        if (string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("MERCURY_SANDBOX_TOKEN")))
+        if (string.IsNullOrWhiteSpace(SandboxFixture.ResolveToken()))
         {
-            Skip = "MERCURY_SANDBOX_TOKEN environment variable is not set. " +
-                   "Provide a sandbox API token to run integration tests.";
+            Skip = "No Mercury sandbox token found. " +
+                   "Set MERCURY_SANDBOX_TOKEN env var or run: " +
+                   "dotnet user-secrets set \"Mercury:ApiToken\" \"<token>\" " +
+                   "--project tests/MercuryBankApi.Sandbox.Tests";
         }
     }
 }
