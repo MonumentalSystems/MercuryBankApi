@@ -5,7 +5,9 @@
 
     <!-- NuGet Package -->
     <PackageId>MonumentalSystems.MercuryBankApi</PackageId>
-    <Version>0.1.0-preview.1</Version>
+    <!-- Version is derived from git tags via MinVer (e.g., v0.1.0 tag → 0.1.0) -->
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerDefaultPreReleaseIdentifiers>preview.0</MinVerDefaultPreReleaseIdentifiers>
     <Authors>Monumental Systems</Authors>
     <Description>Strongly-typed C# client for the Mercury Bank API, auto-generated from OpenAPI spec via NSwag.</Description>
     <PackageTags>mercury;bank;api;fintech;banking</PackageTags>
@@ -28,5 +30,6 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Http" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="MinVer" PrivateAssets="all" />
   </ItemGroup>
 </Project>
