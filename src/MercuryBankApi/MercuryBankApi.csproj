@@ -1,0 +1,32 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>MercuryBankApi</RootNamespace>
+    <AssemblyName>MercuryBankApi</AssemblyName>
+
+    <!-- NuGet Package -->
+    <PackageId>MonumentalSystems.MercuryBankApi</PackageId>
+    <Version>0.1.0-preview.1</Version>
+    <Authors>Monumental Systems</Authors>
+    <Description>Strongly-typed C# client for the Mercury Bank API, auto-generated from OpenAPI spec via NSwag.</Description>
+    <PackageTags>mercury;bank;api;fintech;banking</PackageTags>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/MonumentalSystems/MercuryBankApi</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/MonumentalSystems/MercuryBankApi</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+
+    <!-- Deterministic builds for NuGet -->
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="../../README.md" Pack="true" PackagePath="/" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+  </ItemGroup>
+</Project>
