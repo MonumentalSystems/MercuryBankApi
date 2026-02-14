@@ -39,6 +39,25 @@ jobs:
     timeout-minutes: 60
 
     steps:
+      - name: Detect model override from comment
+        id: model
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        with:
+          script: |
+            const body =
+              context.payload.comment?.body ||
+              context.payload.review?.body ||
+              context.payload.issue?.body ||
+              '';
+            const match = body.match(/@claude\s+(sonnet|haiku|opus)\b/i);
+            const aliases = {
+              sonnet: 'claude-sonnet-4-5',
+              haiku:  'claude-haiku-4-5',
+              opus:   'claude-opus-4-6',
+            };
+            const override = match ? aliases[match[1].toLowerCase()] : '';
+            core.setOutput('id', override || 'claude-opus-4-6');
+
       - name: Checkout repository
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
@@ -61,5 +80,5 @@ jobs:
           plugins: |
             dotnet-skills@richlander-dotnet-skills
           claude_args: |
-            --model claude-opus-4-6
+            --model ${{ steps.model.outputs.id }}
             --allowedTools "Bash(git:*)" "Bash(dotnet:*)" "Bash(gh:*)" "WebFetch" "WebSearch"
