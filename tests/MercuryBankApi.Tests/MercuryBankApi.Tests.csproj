@@ -9,6 +9,7 @@
     <PackageReference Include="xunit.runner.visualstudio" />
     <PackageReference Include="FluentAssertions" />
     <PackageReference Include="NSubstitute" />
+    <PackageReference Include="coverlet.collector" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../../src/MercuryBankApi/MercuryBankApi.csproj" />

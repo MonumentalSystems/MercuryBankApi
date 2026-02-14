@@ -22,3 +22,6 @@ Thumbs.db
 
 ## Build artifacts
 artifacts/
+
+## Test results & coverage
+TestResults/

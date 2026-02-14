@@ -47,6 +47,7 @@ jobs:
           --logger "trx;LogFileName=test-results.trx"
           --logger "console;verbosity=detailed"
           --results-directory ./TestResults
+          --settings tests/coverage.runsettings
           --collect:"XPlat Code Coverage"
 
       - name: Test Report
