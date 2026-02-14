@@ -1,5 +1,10 @@
 # MercuryBankApi
 
+[![CI](https://github.com/MonumentalSystems/MercuryBankApi/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/MonumentalSystems/MercuryBankApi/actions/workflows/ci.yml)
+[![NuGet](https://img.shields.io/nuget/v/MonumentalSystems.MercuryBankApi.svg)](https://www.nuget.org/packages/MonumentalSystems.MercuryBankApi)
+[![NuGet Downloads](https://img.shields.io/nuget/dt/MonumentalSystems.MercuryBankApi.svg)](https://www.nuget.org/packages/MonumentalSystems.MercuryBankApi)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://github.com/MonumentalSystems/MercuryBankApi/blob/master/LICENSE)
+
 Strongly-typed C# client for the [Mercury Bank API](https://docs.mercury.com/reference), auto-generated from OpenAPI spec via NSwag.
 
 ## Installation
