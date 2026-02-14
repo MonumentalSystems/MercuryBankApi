@@ -4,5 +4,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MercuryBankApi.Tests/MercuryBankApi.Tests.csproj" />
+    <Project Path="tests/MercuryBankApi.Sandbox.Tests/MercuryBankApi.Sandbox.Tests.csproj" />
   </Folder>
 </Solution>

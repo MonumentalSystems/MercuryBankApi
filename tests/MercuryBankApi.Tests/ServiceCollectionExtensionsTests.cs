@@ -53,7 +53,7 @@ public class ServiceCollectionExtensionsTests
     {
         var options = new MercuryBankOptions();
 
-        options.BaseUrl.Should().Be("https://api.mercury.com/api/v1");
+        options.BaseUrl.Should().Be(MercuryBankOptions.ProductionBaseUrl);
         options.ApiToken.Should().BeEmpty();
         MercuryBankOptions.SectionName.Should().Be("Mercury");
     }
