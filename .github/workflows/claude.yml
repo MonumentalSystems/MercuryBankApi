@@ -59,5 +59,4 @@ jobs:
             dotnet-skills@richlander-dotnet-skills
           claude_args: |
             --model claude-opus-4-6
-            --max-turns 50
             --allowedTools "Bash(git:*)" "Bash(dotnet:*)" "Bash(gh:*)" "WebFetch" "WebSearch"
