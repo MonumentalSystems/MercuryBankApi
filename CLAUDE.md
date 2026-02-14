@@ -24,7 +24,7 @@
 
 ## Versioning
 - SemVer 2.0: `MAJOR.MINOR.PATCH`
-- Version set in `src/MercuryBankApi/MercuryBankApi.csproj` `<Version>` property
+- Version derived from git tags via MinVer (e.g., `v0.1.0` tag → `0.1.0`)
 - NuGet publish triggered by pushing a `v*` tag (e.g., `v0.1.0`)
 - Breaking API changes = bump MAJOR, new features = bump MINOR, fixes = bump PATCH
 

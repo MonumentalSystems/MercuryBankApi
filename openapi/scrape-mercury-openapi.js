@@ -227,11 +227,14 @@ async function main() {
   console.log(`  Schemas: ${Object.keys(openapi.components.schemas).length}`);
   console.log(`  Tags: ${openapi.tags.length}`);
   
-  console.log('\nNow you can generate a C# client:');
-  console.log('  npx @openapitools/openapi-generator-cli generate \\');
-  console.log('    -i mercury-openapi.json \\');
-  console.log('    -g csharp-netcore \\');
-  console.log('    -o ./MercuryApiClient');
+  console.log('\nNow regenerate the C# client with NSwag:');
+  console.log('  nswag openapi2csclient \\');
+  console.log('    /input:mercury-openapi.json \\');
+  console.log('    /output:../src/MercuryBankApi/Generated/MercuryApiClient.cs \\');
+  console.log('    /namespace:MercuryBankApi.Generated \\');
+  console.log('    /className:MercuryApiClient \\');
+  console.log('    /generateClientInterfaces:true /generateDtoTypes:true \\');
+  console.log('    /injectHttpClient:true /useBaseUrl:false /jsonLibrary:SystemTextJson');
 }
 
 main().catch(console.error);

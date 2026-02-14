@@ -1,0 +1,123 @@
+# MercuryBankApi — LLM Integration Guide
+
+> Strongly-typed C# client for the Mercury Bank API.
+> NuGet: `MonumentalSystems.MercuryBankApi` | License: MIT | Target: .NET 10+
+
+## Install
+
+```bash
+dotnet add package MonumentalSystems.MercuryBankApi
+```
+
+## Setup (Dependency Injection)
+
+### Option 1: Bind from configuration
+
+```csharp
+// Program.cs
+builder.Services.AddMercuryBankApi(builder.Configuration);
+```
+
+```json
+// appsettings.json (store the token in user-secrets or environment variables)
+{
+  "Mercury": {
+    "ApiToken": "your-mercury-api-token",
+    "BaseUrl": "https://api.mercury.com/api/v1"
+  }
+}
+```
+
+### Option 2: Inline configuration
+
+```csharp
+builder.Services.AddMercuryBankApi(opts =>
+{
+    opts.ApiToken = "your-mercury-api-token";
+    opts.BaseUrl = "https://api.mercury.com/api/v1"; // optional, this is the default
+});
+```
+
+Both overloads register `IMercuryBankClient` (transient) and a named `HttpClient` with the Bearer token pre-configured.
+
+## Usage
+
+Inject `IMercuryBankClient` into any service or controller:
+
+```csharp
+public class AccountService(IMercuryBankClient mercury)
+{
+    public async Task<IReadOnlyList<Account>> GetAllAccounts()
+    {
+        return await mercury.GetAccountsAsync();
+    }
+
+    public async Task<Account> GetAccount(Guid id)
+    {
+        return await mercury.GetAccountAsync(id);
+    }
+
+    public async Task<IReadOnlyList<Transaction>> GetRecentTransactions()
+    {
+        var from = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-1));
+        var to = DateOnly.FromDateTime(DateTime.UtcNow);
+        return await mercury.GetTransactionsAsync(from, to);
+    }
+
+    public async Task<IReadOnlyList<Transaction>> GetAccountTransactions(Guid accountId)
+    {
+        var from = DateOnly.FromDateTime(DateTime.UtcNow.AddMonths(-1));
+        var to = DateOnly.FromDateTime(DateTime.UtcNow);
+        return await mercury.GetAccountTransactionsAsync(accountId, from, to);
+    }
+
+    public async Task<Transaction> GetTransaction(Guid transactionId)
+    {
+        return await mercury.GetTransactionAsync(transactionId);
+    }
+}
+```
+
+## Complete API Reference
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `GetAccountsAsync` | `(CancellationToken)` | `IReadOnlyList<Account>` | List all Mercury accounts |
+| `GetAccountAsync` | `(Guid accountId, CancellationToken)` | `Account` | Get a single account by ID |
+| `GetTransactionsAsync` | `(DateOnly from, DateOnly to, CancellationToken)` | `IReadOnlyList<Transaction>` | List transactions across all accounts for a date range |
+| `GetAccountTransactionsAsync` | `(Guid accountId, DateOnly from, DateOnly to, CancellationToken)` | `IReadOnlyList<Transaction>` | List transactions for a specific account |
+| `GetTransactionAsync` | `(Guid transactionId, CancellationToken)` | `Transaction` | Get a single transaction by ID |
+
+All methods accept an optional `CancellationToken` as the last parameter.
+
+## Key Types
+
+### `MercuryBankOptions`
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `BaseUrl` | `string` | `https://api.mercury.com/api/v1` | Mercury API base URL |
+| `ApiToken` | `string` | `""` | Bearer token from Mercury dashboard |
+
+Configuration section name: `"Mercury"` (via `MercuryBankOptions.SectionName`)
+
+### `Account` (from Mercury API)
+
+Key properties: `Id` (Guid), `Name` (string), plus other Mercury account fields.
+
+### `Transaction` (from Mercury API)
+
+Key properties: `Id` (Guid), `Amount` (double), `CreatedAt` (string), `Status` (TransactionStatus), `CounterpartyName` (string), `Kind` (TransactionKind).
+
+## Architecture
+
+- **`IMercuryBankClient`** — Public high-level interface (what consumers use)
+- **`MercuryBankClient`** — Sealed implementation wrapping the generated client
+- **`IMercuryApiClient`** — Low-level NSwag-generated client (internal, not for direct use)
+- **`ServiceCollectionExtensions`** — DI registration via `AddMercuryBankApi()`
+
+## Requirements
+
+- .NET 10 or later
+- A Mercury Bank API token (obtain from Mercury dashboard)
+- `Microsoft.Extensions.DependencyInjection` (included transitively)
