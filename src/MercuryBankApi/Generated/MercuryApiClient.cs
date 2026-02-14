@@ -12431,14 +12431,14 @@ namespace MercuryBankApi.Generated
     public enum SafeRequestInvestorType
     {
 
-        [System.Runtime.Serialization.EnumMember(Value = @"SafeRequestInvestorTypeIndividual")]
-        SafeRequestInvestorTypeIndividual = 0,
+        [System.Runtime.Serialization.EnumMember(Value = @"investorTypeIndividual")]
+        InvestorTypeIndividual = 0,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"SafeRequestInvestorTypeVentureFund")]
-        SafeRequestInvestorTypeVentureFund = 1,
+        [System.Runtime.Serialization.EnumMember(Value = @"investorTypeVentureFund")]
+        InvestorTypeVentureFund = 1,
 
-        [System.Runtime.Serialization.EnumMember(Value = @"SafeRequestInvestorTypeOther")]
-        SafeRequestInvestorTypeOther = 2,
+        [System.Runtime.Serialization.EnumMember(Value = @"investorTypeOther")]
+        InvestorTypeOther = 2,
 
     }
 

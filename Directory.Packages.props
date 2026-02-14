@@ -5,6 +5,9 @@
   <ItemGroup>
     <!-- HTTP -->
     <PackageVersion Include="Microsoft.Extensions.Http" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="10.0.3" />
+    <PackageVersion Include="Microsoft.Extensions.Configuration.UserSecrets" Version="10.0.3" />
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.0.3" />
     <!-- Versioning -->
     <PackageVersion Include="MinVer" Version="6.0.0" />

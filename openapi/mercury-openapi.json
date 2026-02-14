@@ -3735,9 +3735,9 @@
       },
       "SafeRequestInvestorType": {
         "enum": [
-          "SafeRequestInvestorTypeIndividual",
-          "SafeRequestInvestorTypeVentureFund",
-          "SafeRequestInvestorTypeOther"
+          "investorTypeIndividual",
+          "investorTypeVentureFund",
+          "investorTypeOther"
         ],
         "type": "string"
       },
