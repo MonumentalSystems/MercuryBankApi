@@ -11,8 +11,38 @@ permissions:
   id-token: write
 
 jobs:
-  review:
-    # Security: only run in MonumentalSystems org — see docs/PIPELINE-SECURITY.md
+  claude-review:
+    # Security: only run in MonumentalSystems org — see PIPELINE-SECURITY.md
     if: github.repository_owner == 'MonumentalSystems'
-    uses: MonumentalSystems/.github-private/.github/workflows/claude-code-review.yml@main
-    secrets: inherit
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Code Review
+        id: claude-review
+        uses: anthropics/claude-code-action@f669191d7d1e67f08a54b0c11cf5683a9a391951 # v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          use_sticky_comment: true
+          plugin_marketplaces: |
+            https://github.com/anthropics/claude-code.git
+            https://github.com/richlander/dotnet-skills.git
+          plugins: |
+            code-review@claude-code-plugins
+            dotnet-skills@richlander-dotnet-skills
+          prompt: |
+            /code-review:code-review ${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+
+            IMPORTANT: After completing your review, you MUST post your findings as a comment on the PR using:
+            gh pr comment ${{ github.event.pull_request.number }} --body "<your review in markdown>"
+
+            Do NOT rely on sticky comments to post your review — post your review directly via gh pr comment.
+            If you need to verify compilation or tests, use dotnet build and dotnet test.
+          claude_args: |
+            --max-turns 15
+            --allowedTools "Bash(gh pr review:*),Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh api:*),Bash(dotnet build*),Bash(dotnet test*)"

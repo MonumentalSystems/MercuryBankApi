@@ -19,7 +19,45 @@ permissions:
 
 jobs:
   claude:
-    # Security: only run in MonumentalSystems org — see docs/PIPELINE-SECURITY.md
-    if: github.repository_owner == 'MonumentalSystems'
-    uses: MonumentalSystems/.github-private/.github/workflows/claude-assistant.yml@main
-    secrets: inherit
+    # Security: only run in MonumentalSystems org — see PIPELINE-SECURITY.md
+    if: |
+      github.repository_owner == 'MonumentalSystems' && (
+        (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
+        (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, '@claude')) ||
+        (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
+        (github.event_name == 'issues' && (
+          contains(github.event.issue.body, '@claude') ||
+          contains(github.event.issue.title, '@claude') ||
+          github.event.action == 'assigned' ||
+          github.event.action == 'labeled'
+        ))
+      )
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5 # v4
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Code
+        id: claude
+        uses: anthropics/claude-code-action@f669191d7d1e67f08a54b0c11cf5683a9a391951 # v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          github_token: ${{ secrets.ORG_PAT || github.token }}
+          use_commit_signing: true
+          assignee_trigger: 'claude'
+          label_trigger: 'claude'
+          track_progress: true
+          additional_permissions: |
+            actions: read
+          plugin_marketplaces: |
+            https://github.com/richlander/dotnet-skills.git
+          plugins: |
+            dotnet-skills@richlander-dotnet-skills
+          claude_args: |
+            --model claude-opus-4-6
+            --max-turns 50
+            --allowedTools "Bash(git:*)" "Bash(dotnet:*)" "Bash(gh:*)" "WebFetch" "WebSearch"
