@@ -6,6 +6,10 @@ on:
     # Run daily at 08:00 UTC to catch sandbox API changes early.
     - cron: '0 8 * * *'
 
+permissions:
+  checks: write
+  contents: read
+
 jobs:
   sandbox:
     name: Sandbox Integration Tests
@@ -38,4 +42,35 @@ jobs:
       - name: Run sandbox tests
         env:
           MERCURY_SANDBOX_TOKEN: ${{ secrets.MERCURY_SANDBOX_TOKEN }}
-        run: dotnet test tests/MercuryBankApi.Sandbox.Tests --no-build --logger "console;verbosity=detailed"
+        run: >-
+          dotnet test tests/MercuryBankApi.Sandbox.Tests --no-build
+          --logger "trx;LogFileName=test-results.trx"
+          --logger "console;verbosity=detailed"
+          --results-directory ./TestResults
+          --collect:"XPlat Code Coverage"
+
+      - name: Test Report
+        if: always()
+        uses: dorny/test-reporter@b082adf0eced0765477756c2a610396589b8c637 # v2.5.0
+        with:
+          name: Sandbox Test Results
+          path: TestResults/**/*.trx
+          reporter: dotnet-trx
+          fail-on-error: true
+          fail-on-empty: true
+
+      - name: Coverage Summary
+        if: always()
+        uses: irongut/CodeCoverageSummary@51cc3a756ddcd398d447c044c02cb6aa83fdae95 # v1.3.0
+        with:
+          filename: TestResults/**/coverage.cobertura.xml
+          badge: true
+          format: markdown
+          output: both
+          thresholds: '60 80'
+          indicators: true
+          hide_complexity: true
+
+      - name: Coverage Report to Summary
+        if: always()
+        run: cat code-coverage-results.md >> "$GITHUB_STEP_SUMMARY"
