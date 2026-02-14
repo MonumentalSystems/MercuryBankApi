@@ -75,20 +75,91 @@ public class AccountService(IMercuryBankClient mercury)
     {
         return await mercury.GetTransactionAsync(transactionId);
     }
+
+    public async Task<OrganizationInfo> GetOrg()
+    {
+        return await mercury.GetOrganizationAsync();
+    }
+
+    public async Task<IReadOnlyList<ApiV1ArCustomerResponseData>> GetCustomers()
+    {
+        return await mercury.GetCustomersAsync();
+    }
 }
 ```
 
 ## Complete API Reference
 
+All methods accept an optional `CancellationToken` as the last parameter.
+
+### Accounts & Transactions
+
 | Method | Signature | Returns | Description |
 |--------|-----------|---------|-------------|
-| `GetAccountsAsync` | `(CancellationToken)` | `IReadOnlyList<Account>` | List all Mercury accounts |
-| `GetAccountAsync` | `(Guid accountId, CancellationToken)` | `Account` | Get a single account by ID |
-| `GetTransactionsAsync` | `(DateOnly from, DateOnly to, CancellationToken)` | `IReadOnlyList<Transaction>` | List transactions across all accounts for a date range |
-| `GetAccountTransactionsAsync` | `(Guid accountId, DateOnly from, DateOnly to, CancellationToken)` | `IReadOnlyList<Transaction>` | List transactions for a specific account |
-| `GetTransactionAsync` | `(Guid transactionId, CancellationToken)` | `Transaction` | Get a single transaction by ID |
+| `GetAccountsAsync` | `()` | `IReadOnlyList<Account>` | List all Mercury accounts |
+| `GetAccountAsync` | `(Guid accountId)` | `Account` | Get a single account by ID |
+| `GetAccountStatementsAsync` | `(Guid accountId)` | `IReadOnlyList<DepositoryAccountStatement>` | List statements for an account |
+| `GetAccountCardsAsync` | `(Guid accountId)` | `IReadOnlyList<AccountCard>` | List cards for an account |
+| `GetTransactionsAsync` | `(DateOnly from, DateOnly to)` | `IReadOnlyList<Transaction>` | List transactions across all accounts for a date range |
+| `GetAccountTransactionsAsync` | `(Guid accountId, DateOnly from, DateOnly to)` | `IReadOnlyList<Transaction>` | List transactions for a specific account |
+| `GetTransactionAsync` | `(Guid transactionId)` | `Transaction` | Get a single transaction by ID |
 
-All methods accept an optional `CancellationToken` as the last parameter.
+### Organization, Users & Categories
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `GetOrganizationAsync` | `()` | `OrganizationInfo` | Get organization details |
+| `GetUsersAsync` | `()` | `IReadOnlyList<UserDetails>` | List all users in the organization |
+| `GetUserAsync` | `(Guid userId)` | `UserDetails` | Get a single user by ID |
+| `GetCategoriesAsync` | `()` | `IReadOnlyList<CategoryData>` | List all transaction categories |
+
+### Events
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `GetEventsAsync` | `()` | `IReadOnlyList<ApiEventResponse>` | List all events |
+| `GetEventAsync` | `(Guid eventId)` | `ApiEventResponse` | Get a single event by ID |
+
+### Treasury
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `GetTreasuryAccountsAsync` | `()` | `IReadOnlyList<TreasuryAccount>` | List all treasury accounts |
+| `GetTreasuryTransactionsAsync` | `(Guid treasuryId)` | `IReadOnlyList<TreasuryTxn>` | List transactions for a treasury account |
+
+### SAFEs
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `GetSafeRequestsAsync` | `()` | `IReadOnlyList<APISafeRequest>` | List all SAFE requests |
+| `GetSafeRequestAsync` | `(Guid safeRequestId)` | `APISafeRequest` | Get a single SAFE request by ID |
+
+### Accounts Receivable — Customers
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `GetCustomersAsync` | `()` | `IReadOnlyList<ApiV1ArCustomerResponseData>` | List all AR customers |
+| `GetCustomerAsync` | `(Guid customerId)` | `ApiV1ArCustomerResponseData` | Get a single AR customer |
+| `CreateCustomerAsync` | `(ApiV1ArCustomerCreateRequest request)` | `ApiV1ArCustomerResponseData` | Create a new AR customer |
+| `UpdateCustomerAsync` | `(Guid customerId, ApiV1ArCustomerUpdateRequest request)` | `ApiV1ArCustomerResponseData` | Update an AR customer |
+| `DeleteCustomerAsync` | `(Guid customerId)` | `Task` | Delete an AR customer |
+
+### Accounts Receivable — Invoices
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `GetInvoicesAsync` | `()` | `IReadOnlyList<ApiV1ArInvoicesData>` | List all AR invoices |
+| `GetInvoiceAsync` | `(Guid invoiceId)` | `ApiV1ArInvoiceResponse` | Get a single AR invoice |
+| `CreateInvoiceAsync` | `(ApiV1ArInvoiceCreateRequest request)` | `ApiV1ArInvoiceResponse` | Create a new AR invoice |
+| `UpdateInvoiceAsync` | `(Guid invoiceId, ApiV1ArInvoiceUpdateRequest request)` | `ApiV1ArInvoiceResponse` | Update an AR invoice |
+| `CancelInvoiceAsync` | `(Guid invoiceId)` | `Task` | Cancel an AR invoice |
+
+### Send Money
+
+| Method | Signature | Returns | Description |
+|--------|-----------|---------|-------------|
+| `RequestSendMoneyAsync` | `(Guid accountId, SendMoneyAPIRequest request)` | `SendMoneyApprovalRequestResponse` | Request approval to send money |
+| `GetSendMoneyApprovalRequestAsync` | `(Guid requestId)` | `SendMoneyApprovalRequestResponse` | Get a send-money approval request |
 
 ## Key Types
 
