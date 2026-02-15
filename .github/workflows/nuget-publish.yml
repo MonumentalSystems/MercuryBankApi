@@ -11,7 +11,6 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
 
     steps:
       - uses: actions/checkout@v4
@@ -34,9 +33,6 @@ jobs:
 
       - name: Pack
         run: dotnet pack src/MercuryBankApi/MercuryBankApi.csproj --configuration Release --no-build -o ./artifacts
-
-      - name: Push to GitHub Packages
-        run: dotnet nuget push ./artifacts/*.nupkg --source "https://nuget.pkg.github.com/MonumentalSystems/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
 
       - name: Push to NuGet.org
         env:
